@@ -1,4 +1,13 @@
-const { addData, getArabica, getArabicaById} = require("./handler");
+const {
+  addData,
+  getArabica,
+  getArabicaById,
+} = require("./handler/arabicaHandler");
+const {
+  getAllUsers,
+  registerUser,
+  loginUser,
+} = require("./handler/userHandler");
 
 const routes = [
   {
@@ -15,6 +24,21 @@ const routes = [
     method: "GET",
     path: "/arabica/{id}",
     handler: getArabicaById,
+  },
+  {
+    method: "GET",
+    path: "/users",
+    handler: getAllUsers,
+  },
+  {
+    method: "POST",
+    path: "/register",
+    handler: registerUser,
+  },
+  {
+    method: "POST",
+    path: "/login",
+    handler: loginUser,
   },
 ];
 

@@ -1,15 +1,5 @@
-
-const arabica = require("./arabica");
-const admin = require("firebase-admin");
-const serviceAccount = require("../serviceAccount.json"); // Replace with your service account key
-const { db } = require("./lib/firebase");
-const {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-} = require("firebase/firestore");
+const arabica = require("../arabica");
+const { db } = require("../lib/firebase");
 
 const getArabica = async (request, h) => {
   try {
@@ -29,7 +19,6 @@ const getArabica = async (request, h) => {
         });
       });
 
-    console.log("arabica => ", arabica);
     const response = h.response({
       status: "success",
       message: "get Arabica successfully",
@@ -48,56 +37,48 @@ const getArabica = async (request, h) => {
   }
 };
 const getArabicaById = async (request, h) => {
-  try{
-    const { id } = request.params; 
-    console.log(id);
-    
-    var docRef = db.collection("arabica").doc(id);
+  try {
+    const { id } = request.params;
+
+    const docRef = db.collection("arabica").doc(id);
     const doc = await docRef.get();
-      if (doc.exists) {
-        const data = doc.data();
-        const arabicaRecipe = {
-          id: doc.id,
-          ingredients: data.ingredients,
-          name: data.name,
-          steps: data.steps,
-        };
-  
-        const response = h.response({
-          status: 'success',
-          message: 'Fetched Arabica recipe by ID successfully',
-          data: arabicaRecipe,
-        
-        });
-        console.log(arabicaRecipe);
-        response.code(200);
-        console.log("dari if");
-        return response;
-      } else {
-        const response = h.response({
-          status: 'fail',
-          message: 'Arabica recipe not found',
-        });
-        response.code(404);
-        console.log("dari else");
-        return response;
-      }
-    }catch(error)  {
+    if (doc.exists) {
+      const data = doc.data();
+      const arabicaRecipe = {
+        id: doc.id,
+        ingredients: data.ingredients,
+        name: data.name,
+        steps: data.steps,
+      };
+
+      const response = h.response({
+        status: "success",
+        message: "Fetched Arabica recipe by ID successfully",
+        data: arabicaRecipe,
+      });
+      response.code(200);
+      return response;
+    } else {
+      const response = h.response({
+        status: "fail",
+        message: "Arabica recipe not found",
+      });
+      response.code(404);
+      return response;
+    }
+  } catch (error) {
     console.error(error);
     const response = h.response({
-      status: 'fail',
-      message: 'Failed to get Arabica recipe by ID: ' + error.message,
+      status: "fail",
+      message: "Failed to get Arabica recipe by ID: " + error.message,
     });
     response.code(500);
-    console.log("dari catch");
     return response;
   }
 };
 
-
 const addData = (request, h) => {
   const recipesCollection = db.collection("arabica");
-  // Add the Espresso recipe to Firebase
   try {
     arabica.map((recipe) => {
       recipesCollection
@@ -127,4 +108,4 @@ const addData = (request, h) => {
   }
 };
 
-module.exports = { addData, getArabica, getArabicaById};
+module.exports = { addData, getArabica, getArabicaById };
