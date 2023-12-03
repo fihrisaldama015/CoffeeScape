@@ -1,9 +1,8 @@
-const { nanoid } = require("nanoid");
-const books = require("./books");
+
 const arabica = require("./arabica");
 const admin = require("firebase-admin");
 const serviceAccount = require("../serviceAccount.json"); // Replace with your service account key
-const { db } = require("./lib/firebase");
+const { db   } = require("./lib/firebase");
 const {
   addDoc,
   collection,
@@ -43,6 +42,47 @@ const getArabica = async (request, h) => {
     return response;
   }
 };
+const getArabicaById = async (request, h) => {
+  try {
+    const { id } = request.params; // Extract ID from request parameters
+    const docRef = doc(db, 'arabica', id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const arabicaRecipe = {
+        id: docSnap.id,
+        ingredients: data.ingredients,
+        name: data.name,
+        steps: data.steps,
+      };
+
+      const response = h.response({
+        status: 'success',
+        message: 'Fetched Arabica recipe by ID successfully',
+        data: arabicaRecipe,
+      });
+      response.code(200);
+      return response;
+    } else {
+      const response = h.response({
+        status: 'fail',
+        message: 'Arabica recipe not found',
+      });
+      response.code(404);
+      return response;
+    }
+  } catch (error) {
+    console.error(error);
+    const response = h.response({
+      status: 'fail',
+      message: 'Failed to get Arabica recipe by ID: ' + error.message,
+    });
+    response.code(500);
+    return response;
+  }
+};
+
 
 const addData = (request, h) => {
   admin.initializeApp({
@@ -84,4 +124,4 @@ const addData = (request, h) => {
   }
 };
 
-module.exports = { addBook, addData, getArabica };
+module.exports = { addData, getArabica, getArabicaById};

@@ -1,11 +1,6 @@
-const { addBook, addData, getArabica } = require("./handler");
+const { addData, getArabica, getArabicaById} = require("./handler");
 
 const routes = [
-  {
-    method: "POST",
-    path: "/books",
-    handler: addBook,
-  },
   {
     method: "GET",
     path: "/add",
@@ -15,6 +10,11 @@ const routes = [
     method: "GET",
     path: "/arabica",
     handler: getArabica,
+  },
+  {
+    method: "GET",
+    path: "/arabica/{id}",
+    handler: getArabicaById,
   },
 ];
 
