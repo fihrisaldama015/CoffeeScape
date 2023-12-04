@@ -47,6 +47,10 @@ const arabica = [
   },
   {
     name: "Long Black",
+    FlavorProfiles:"the long black unfolds on the palate like a finely composed melody. The robust and intense notes of the espresso take center stage, accompanied by a nuanced backdrop of warmth from the added water. The contrast between strength and subtlety creates a harmonious balance that lingers on the taste buds.",
+    RoastLevel: "Medium to dark roast.",
+    ServingStyle : "Similar to an Americano, but with the espresso added to hot water.",
+    RecommendedBeans : "A blend of Arabica and Robusta beans ",
     ingredients: [
       {
         name: "Espresso Coffee",

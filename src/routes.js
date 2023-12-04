@@ -7,6 +7,8 @@ const {
   getAllUsers,
   registerUser,
   loginUser,
+  updateUser,
+  getUserById,
 } = require("./handler/userHandler");
 
 const routes = [
@@ -31,6 +33,11 @@ const routes = [
     handler: getAllUsers,
   },
   {
+    method: "GET",
+    path: "/users/{id}",
+    handler: getUserById,
+  },
+  {
     method: "POST",
     path: "/register",
     handler: registerUser,
@@ -39,6 +46,12 @@ const routes = [
     method: "POST",
     path: "/login",
     handler: loginUser,
+  },
+
+  {
+    method: "PUT",
+    path: "/users/{id}",
+    handler: updateUser,
   },
 ];
 

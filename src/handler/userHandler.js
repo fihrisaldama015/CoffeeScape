@@ -35,6 +35,8 @@ const getAllUsers = async (request, h) => {
   }
 };
 
+
+
 const registerUser = async (request, h) => {
   try {
     if (!request.payload) {
@@ -169,5 +171,102 @@ const loginUser = async (request, h) => {
     return response;
   }
 };
+const updateUser = async (request, h) => {
+  try {
+    const { id } = request.params;
+    let user = await db.collection("users").doc(id).get();
+    if (!user.exists) {
+      const response = h.response({
+        status: "fail",
+        message: "User not found",
+      });
+      response.code(404);
+      return response;
+    }
+    if (!request.payload) {
+      const response = h.response({
+        status: "fail",
+        message: "Please add payload",
+      });
+      response.code(400);
+      return response;
+    }
 
-module.exports = { getAllUsers, registerUser, loginUser };
+    let { email, name, password } = request.payload;
+
+    if (!email || !name || !password) {
+      const response = h.response({
+        status: "fail",
+        message: "Please fill all field, email, name, and password",
+      });
+      response.code(400);
+      return response;
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const data = {
+      email,
+      name,
+      password: hashedPassword,
+    };
+
+    let userRef = db.collection("users").doc(id);
+    await userRef.update(data);
+    const response = h.response({
+      status: "success",
+      message: "User Updated successfully",
+      data: {
+        id: user.id,
+        email,
+        name,
+      },
+    });
+    response.code(201);
+    return response;
+  } catch (error) {
+    console.log(error);
+    const response = h.response({
+      status: "fail",
+      message: "User Updated failed: " + error.message,
+    });
+    response.code(400);
+    return response;
+  }
+};
+const getUserById = async (request, h) => {
+  try {
+    const { id } = request.params;
+    const user = await db.collection("users").doc(id).get();
+    if (!user.exists) {
+      const response = h.response({
+        status: "fail",
+        message: "User not found",
+      });
+      response.code(404);
+      return response;
+    }
+    const response = h.response({
+      status: "success",
+      message: "get User successfully",
+      data: {
+        id: user.id,
+        email: user.data().email,
+        name: user.data().name,
+      },
+    });
+    response.code(200);
+    return response;
+  } catch (error) {
+    console.log(error);
+    const response = h.response({
+      status: "fail",
+      message: "get User failed: " + error,
+    });
+    response.code(400);
+    return response;
+  }
+};
+
+module.exports = { getAllUsers, registerUser, loginUser , updateUser, getUserById};
