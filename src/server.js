@@ -1,5 +1,6 @@
 const Hapi = require("@hapi/hapi");
 const routes = require("./routes");
+require("dotenv").config();
 
 const init = async () => {
   const port = 9000;

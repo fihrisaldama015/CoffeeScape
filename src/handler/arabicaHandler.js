@@ -1,7 +1,5 @@
-const { nanoid } = require("nanoid");
-const books = require("./books");
-const arabica = require("./arabica");
-const { db } = require("./lib/firebase");
+const arabica = require("../arabica");
+const { db } = require("../lib/firebase");
 
 const getArabica = async (request, h) => {
   try {
@@ -21,7 +19,6 @@ const getArabica = async (request, h) => {
         });
       });
 
-    console.log("arabica => ", arabica);
     const response = h.response({
       status: "success",
       message: "get Arabica successfully",
@@ -39,10 +36,49 @@ const getArabica = async (request, h) => {
     return response;
   }
 };
+const getArabicaById = async (request, h) => {
+  try {
+    const { id } = request.params;
+
+    const docRef = db.collection("arabica").doc(id);
+    const doc = await docRef.get();
+    if (doc.exists) {
+      const data = doc.data();
+      const arabicaRecipe = {
+        id: doc.id,
+        ingredients: data.ingredients,
+        name: data.name,
+        steps: data.steps,
+      };
+
+      const response = h.response({
+        status: "success",
+        message: "Fetched Arabica recipe by ID successfully",
+        data: arabicaRecipe,
+      });
+      response.code(200);
+      return response;
+    } else {
+      const response = h.response({
+        status: "fail",
+        message: "Arabica recipe not found",
+      });
+      response.code(404);
+      return response;
+    }
+  } catch (error) {
+    console.error(error);
+    const response = h.response({
+      status: "fail",
+      message: "Failed to get Arabica recipe by ID: " + error.message,
+    });
+    response.code(500);
+    return response;
+  }
+};
 
 const addData = (request, h) => {
   const recipesCollection = db.collection("arabica");
-  // Add the Espresso recipe to Firebase
   try {
     arabica.map((recipe) => {
       recipesCollection
@@ -72,4 +108,4 @@ const addData = (request, h) => {
   }
 };
 
-module.exports = { addBook, addData, getArabica };
+module.exports = { addData, getArabica, getArabicaById };
