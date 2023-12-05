@@ -1,5 +1,6 @@
 const { db } = require("../lib/firebase");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const getAllUsers = async (request, h) => {
   try {
@@ -35,14 +36,12 @@ const getAllUsers = async (request, h) => {
   }
 };
 
-
-
 const registerUser = async (request, h) => {
   try {
     if (!request.payload) {
       const response = h.response({
         status: "fail",
-        message: "Please add payload",
+        message: "Please add a JSON payload",
       });
       response.code(400);
       return response;
@@ -53,7 +52,8 @@ const registerUser = async (request, h) => {
     if (!email || !name || !password) {
       const response = h.response({
         status: "fail",
-        message: "Please fill all field, email, name, and password",
+        message:
+          "Please fill all field in JSON, `email`, `name`, and `password`",
       });
       response.code(400);
       return response;
@@ -110,7 +110,7 @@ const loginUser = async (request, h) => {
     if (!request.payload) {
       const response = h.response({
         status: "fail",
-        message: "Please add payload",
+        message: "Please add a valid JSON payload",
       });
       response.code(400);
       return response;
@@ -121,7 +121,7 @@ const loginUser = async (request, h) => {
     if (!email || !password) {
       const response = h.response({
         status: "fail",
-        message: "Please fill all field, email and password",
+        message: "Please fill all field in JSON, `email` and `password`",
       });
       response.code(400);
       return response;
@@ -150,13 +150,22 @@ const loginUser = async (request, h) => {
       return response;
     }
 
+    const JWTPayloadData = {
+      id: user.docs[0].id,
+      email: userData.email,
+      name: userData.name,
+      iss: "http://localhost",
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+      iat: Math.floor(Date.now() / 1000),
+    };
+
+    const token = jwt.sign(JWTPayloadData, process.env.JWT_SECRET_KEY);
+
     const response = h.response({
       status: "success",
       message: "Login successfully",
       data: {
-        id: user.docs[0].id,
-        email: userData.email,
-        name: userData.name,
+        token,
       },
     });
     response.code(200);
@@ -269,4 +278,10 @@ const getUserById = async (request, h) => {
   }
 };
 
-module.exports = { getAllUsers, registerUser, loginUser , updateUser, getUserById};
+module.exports = {
+  getAllUsers,
+  registerUser,
+  loginUser,
+  updateUser,
+  getUserById,
+};
