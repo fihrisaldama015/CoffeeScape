@@ -9,6 +9,8 @@ const {
   loginUser,
   updateUser,
   getUserById,
+  addFavoriteCoffee,
+  removeFavoriteCoffee,
 } = require("./handler/userHandler");
 
 const routes = [
@@ -52,6 +54,16 @@ const routes = [
     method: "PUT",
     path: "/users/{id}",
     handler: updateUser,
+  },
+  {
+    method: "POST",
+    path: "/users/{id}/favorite",
+    handler: addFavoriteCoffee,
+  },
+  {
+    method: "DELETE",
+    path: "/users/{id}/favorite",
+    handler: removeFavoriteCoffee,
   },
 ];
 

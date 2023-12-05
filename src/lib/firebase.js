@@ -4,6 +4,7 @@
 // const { GoogleAuthProvider } = require("firebase/auth");
 
 const admin = require("firebase-admin");
+const { FieldValue } = require("firebase-admin/firestore");
 const serviceAccount = require("../../serviceAccount.json"); // Replace with your service account key
 
 admin.initializeApp({
@@ -29,4 +30,4 @@ const db = admin.firestore();
 // const auth = getAuth(app);
 // const db = getFirestore(app);
 
-module.exports = { db };
+module.exports = { db, FieldValue };
