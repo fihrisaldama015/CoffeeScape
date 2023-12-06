@@ -263,6 +263,9 @@ const getUserById = async (request, h) => {
         id: user.id,
         email: user.data().email,
         name: user.data().name,
+        favoriteCoffee: user.data().favoriteCoffee
+          ? user.data().favoriteCoffee
+          : [],
       },
     });
     response.code(200);
