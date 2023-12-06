@@ -4,11 +4,12 @@
 // const { GoogleAuthProvider } = require("firebase/auth");
 
 const admin = require("firebase-admin");
+const { FieldValue } = require("firebase-admin/firestore");
 const serviceAccount = require("../../serviceAccount.json"); // Replace with your service account key
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://credible-bay-405515.asia-southeast2.firebaseio.com/", // Replace with your database URL
+  databaseURL: process.env.DATABASE_URL, // Replace with your database URL
 });
 
 const db = admin.firestore();
@@ -29,4 +30,4 @@ const db = admin.firestore();
 // const auth = getAuth(app);
 // const db = getFirestore(app);
 
-module.exports = { db };
+module.exports = { db, FieldValue };
