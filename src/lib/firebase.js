@@ -9,7 +9,7 @@ const serviceAccount = require("../../serviceAccount.json"); // Replace with you
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://credible-bay-405515.asia-southeast2.firebaseio.com/", // Replace with your database URL
+  databaseURL: process.env.DATABASE_URL, // Replace with your database URL
 });
 
 const db = admin.firestore();
