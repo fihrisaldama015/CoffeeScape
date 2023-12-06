@@ -5,7 +5,7 @@ const getArabica = async (request, h) => {
   try {
     let arabica = [];
     await db
-      .collection("arabica")
+      .collection("recipes")
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -40,7 +40,7 @@ const getArabicaById = async (request, h) => {
   try {
     const { id } = request.params;
 
-    const docRef = db.collection("arabica").doc(id);
+    const docRef = db.collection("recipes").doc(id);
     const doc = await docRef.get();
     if (doc.exists) {
       const data = doc.data();
@@ -78,7 +78,7 @@ const getArabicaById = async (request, h) => {
 };
 
 const addData = (request, h) => {
-  const recipesCollection = db.collection("arabica");
+  const recipesCollection = db.collection("recipes");
   try {
     arabica.map((recipe) => {
       recipesCollection
