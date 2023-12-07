@@ -12,7 +12,7 @@ const {
   addFavoriteCoffee,
   removeFavoriteCoffee,
 } = require("./handler/userHandler");
-
+const { addRating,addCoffeeRating } = require("./handler/userRatingHandler");
 const routes = [
   {
     method: "GET",
@@ -64,6 +64,16 @@ const routes = [
     method: "DELETE",
     path: "/users/{id}/favorite",
     handler: removeFavoriteCoffee,
+  },
+  {
+    method: "GET",
+    path: "/adddatarating",
+    handler: addRating,
+  },
+  {
+    method: "POST",
+    path: "/users/{id}/rating",
+    handler: addCoffeeRating,
   },
 ];
 
