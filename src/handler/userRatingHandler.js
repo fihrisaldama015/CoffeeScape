@@ -1,5 +1,5 @@
 const arabica = require("../rating");
-const { db,FieldValue} = require("../lib/firebase");
+const { db, FieldValue } = require("../lib/firebase");
 
 const addRating = (request, h) => {
   const ratingsCollection = db.collection("rating");
@@ -34,7 +34,7 @@ const addRating = (request, h) => {
 const addCoffeeRating = async (request, h) => {
   try {
     const { id } = request.params;
-    const { coffeeId,rating } = request.payload;
+    const { coffeeId, rating } = request.payload;
     if (!coffeeId) {
       const response = h.response({
         status: "fail",
@@ -62,7 +62,7 @@ const addCoffeeRating = async (request, h) => {
       response.code(404);
       return response;
     }
-    if(rating > 10 || rating < 1){
+    if (rating > 10 || rating < 1) {
       const response = h.response({
         status: "fail",
         message: "Please Input Rating between 1 - 10",
@@ -70,11 +70,27 @@ const addCoffeeRating = async (request, h) => {
       response.code(404);
       return response;
     }
-      
+
     const userRef = db.collection("rating").doc(coffeeId);
+
+    const allRating = await userRef.get();
+
+    const ratingExist = allRating
+      .data()
+      .rating.find((item) => item.userId === id);
+
+    if (ratingExist) {
+      const response = h.response({
+        status: "fail",
+        message: `User with id: ${id} already give rating to this recipe with id: ${coffeeId}`,
+      });
+      response.code(400);
+      return response;
+    }
+
     await userRef.set(
       {
-        rating: FieldValue.arrayUnion(id,rating),
+        rating: FieldValue.arrayUnion({ userId: id, rating }),
       },
       { merge: true }
     );
@@ -99,6 +115,6 @@ const addCoffeeRating = async (request, h) => {
     response.code(400);
     return response;
   }
-}
+};
 
-module.exports = { addRating,addCoffeeRating};
+module.exports = { addRating, addCoffeeRating };
