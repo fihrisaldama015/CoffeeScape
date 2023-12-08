@@ -117,4 +117,84 @@ const addCoffeeRating = async (request, h) => {
   }
 };
 
-module.exports = { addRating, addCoffeeRating };
+const removeRatingCoffee = async (request, h) => {
+  try {
+    const { id } = request.params;
+    const { coffeeId } = request.payload;
+    if (!coffeeId) {
+      const response = h.response({
+        status: "fail",
+        message: "Please fill all field, `coffeeId`",
+      });
+      response.code(400);
+      return response;
+    }
+    const user = await db.collection("users").doc(id).get();
+    if (!user.exists) {
+      const response = h.response({
+        status: "fail",
+        message: "User not found",
+      });
+      response.code(404);
+      return response;
+    }
+    const recipeExist = await db.collection("recipes").doc(coffeeId).get();
+
+    if (!recipeExist.exists) {
+      const response = h.response({
+        status: "fail",
+        message: "Recipe with id:`" + coffeeId + "` not found",
+      });
+      response.code(404);
+      return response;
+    }
+
+    const userRef = db.collection("rating").doc(coffeeId);
+
+    const allRating = await userRef.get();
+
+    const ratingExist = allRating
+      .data()
+      .rating.find((item) => item.userId === id);
+
+    if (!ratingExist) {
+      const response = h.response({
+        status: "fail",
+        message: `User with id: ${id} not giving rating to recipe with id: ${coffeeId}`,
+      });
+      response.code(400);
+      return response;
+    }
+
+    const ratingIndex = allRating
+      .data()
+      .rating.findIndex((item) => item.userId === id);
+
+    await userRef.update({
+      rating: FieldValue.arrayRemove(allRating.data().rating[ratingIndex]),
+    });
+
+    console.log("Rating removed successfully");
+    console.log("Updated user data:", { id: user.id });
+    const response = h.response({
+      status: "success",
+      message: "remove favorite successfully",
+      data: {
+        id: user.id,
+        favorite: coffeeId,
+      },
+    });
+    response.code(201);
+    return response;
+  } catch (error) {
+    console.log(error);
+    const response = h.response({
+      status: "fail",
+      message: "remove favorite failed: " + error,
+    });
+    response.code(400);
+    return response;
+  }
+};
+
+module.exports = { addRating, addCoffeeRating, removeRatingCoffee };
