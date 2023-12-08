@@ -132,7 +132,7 @@ const loginUser = async (request, h) => {
     if (user.empty) {
       const response = h.response({
         status: "fail",
-        message: "User not found",
+        message: "User not found with email: " + email,
       });
       response.code(404);
       return response;
@@ -425,4 +425,3 @@ module.exports = {
   addFavoriteCoffee,
   removeFavoriteCoffee,
 };
-
