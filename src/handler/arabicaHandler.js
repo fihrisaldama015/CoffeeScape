@@ -11,9 +11,13 @@ const getArabica = async (request, h) => {
         querySnapshot.forEach((doc) => {
           const temp = {
             id: doc.id,
-            ingredients: doc.data().ingredients,
             name: doc.data().name,
-            steps: doc.data().steps,
+            FlavorProfiles: doc.data().FlavorProfiles,
+            RoastLevel: doc.data().RoastLevel,
+            ServingStyle: doc.data().ServingStyle,
+            RecommendedBeans: doc.data().RecommendedBeans,
+            BrewingMethod: doc.data().BrewingMethod,
+            rating: doc.data().rating,
           };
           arabica.push(temp);
         });
@@ -46,9 +50,13 @@ const getArabicaById = async (request, h) => {
       const data = doc.data();
       const arabicaRecipe = {
         id: doc.id,
-        ingredients: data.ingredients,
         name: data.name,
-        steps: data.steps,
+        FlavorProfiles: data.FlavorProfiles,
+        RoastLevel: data.RoastLevel,
+        ServingStyle: data.ServingStyle,
+        RecommendedBeans: data.RecommendedBeans,
+        BrewingMethod: data.BrewingMethod,
+        rating: data.rating,
       };
 
       const response = h.response({
