@@ -3,21 +3,64 @@ const {
   getArabica,
   getArabicaById,
 } = require("./handler/arabicaHandler");
-const {
-  getAllUsers,
-  registerUser,
-  loginUser,
-  updateUser,
-  getUserById,
-  addFavoriteCoffee,
-  removeFavoriteCoffee,
-} = require("./handler/userHandler");
+
 const {
   addRating,
   addCoffeeRating,
   removeRatingCoffee,
 } = require("./handler/userRatingHandler");
-const routes = [
+
+const { registerUser, loginUser } = require("./handler/authHandler");
+
+const {
+  getAllUsers,
+  updateUser,
+  getUserById,
+  forgotPassword,
+} = require("./handler/userHandler");
+
+const {
+  addFavoriteCoffee,
+  removeFavoriteCoffee,
+} = require("./handler/userFavoriteHandler");
+
+const authRoute = [
+  {
+    method: "POST",
+    path: "/register",
+    handler: registerUser,
+  },
+  {
+    method: "POST",
+    path: "/login",
+    handler: loginUser,
+  },
+];
+
+const userRoute = [
+  {
+    method: "GET",
+    path: "/users",
+    handler: getAllUsers,
+  },
+  {
+    method: "GET",
+    path: "/users/{id}",
+    handler: getUserById,
+  },
+  {
+    method: "PUT",
+    path: "/users/{id}",
+    handler: updateUser,
+  },
+  {
+    method: "PUT",
+    path: "/forgotpassword",
+    handler: forgotPassword,
+  },
+];
+
+const recipesRoute = [
   {
     method: "GET",
     path: "/add",
@@ -33,32 +76,9 @@ const routes = [
     path: "/arabica/{id}",
     handler: getArabicaById,
   },
-  {
-    method: "GET",
-    path: "/users",
-    handler: getAllUsers,
-  },
-  {
-    method: "GET",
-    path: "/users/{id}",
-    handler: getUserById,
-  },
-  {
-    method: "POST",
-    path: "/register",
-    handler: registerUser,
-  },
-  {
-    method: "POST",
-    path: "/login",
-    handler: loginUser,
-  },
+];
 
-  {
-    method: "PUT",
-    path: "/users/{id}",
-    handler: updateUser,
-  },
+const userFavoriteRoute = [
   {
     method: "POST",
     path: "/users/{id}/favorite",
@@ -69,6 +89,9 @@ const routes = [
     path: "/users/{id}/favorite",
     handler: removeFavoriteCoffee,
   },
+];
+
+const coffeeRatingRoute = [
   {
     method: "GET",
     path: "/adddatarating",
@@ -84,6 +107,14 @@ const routes = [
     path: "/users/{id}/rating",
     handler: removeRatingCoffee,
   },
+];
+
+const routes = [
+  ...authRoute,
+  ...userRoute,
+  ...recipesRoute,
+  ...userFavoriteRoute,
+  ...coffeeRatingRoute,
 ];
 
 module.exports = routes;

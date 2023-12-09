@@ -91,7 +91,7 @@ const addData = (request, h) => {
     arabica.map((recipe) => {
       recipesCollection
         .doc(recipe.name)
-        .set(recipe)
+        .set(recipe, { merge: true })
         .then(() => {
           console.log(`${recipe.name} recipe added to Firebase!`);
         })
